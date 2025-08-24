@@ -1,12 +1,22 @@
 {
-  "accuracy": 0.6732117812061711,
-  "macro_f1": 0.8021305695031448,
-  "micro_f1": 0.8289017341040462,
-  "weighted_f1": 0.8235419790934505,
+  "accuracy": 0.6395511921458625,
+  "macro_f1": 0.3664589402960393,
+  "weighted_f1": 0.638217694028751,
   "per_class_f1": {
-    "cardiovascular": 0.8723404255319149,
-    "hepatorenal": 0.7842105263157895,
-    "neurological": 0.8651026392961877,
-    "oncological": 0.6868686868686869
+    "cardiovascular": 0.7421875,
+    "cardiovascular|hepatorenal": 0.5555555555555556,
+    "cardiovascular|hepatorenal|oncological": 0.0,
+    "cardiovascular|oncological": 0.23529411764705882,
+    "hepatorenal": 0.7653061224489796,
+    "hepatorenal|oncological": 0.3829787234042553,
+    "neurological": 0.7551487414187643,
+    "neurological|cardiovascular": 0.4375,
+    "neurological|cardiovascular|hepatorenal": 0.0,
+    "neurological|cardiovascular|hepatorenal|oncological": 0.0,
+    "neurological|cardiovascular|oncological": 0.0,
+    "neurological|hepatorenal": 0.2894736842105263,
+    "neurological|hepatorenal|oncological": 0.2,
+    "neurological|oncological": 0.38596491228070173,
+    "oncological": 0.7474747474747475
   }
 }
