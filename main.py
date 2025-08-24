@@ -1,8 +1,9 @@
-# main.api.py
+# main.py
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from joblib import load
 import re
+import nltk
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
 
@@ -13,17 +14,23 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# --- Verificar/descargar recursos NLTK necesarios ---
+try:
+    stop_words = set(stopwords.words('english'))
+except LookupError:
+    nltk.download('stopwords')
+    stop_words = set(stopwords.words('english'))
+
+stemmer = PorterStemmer()
+
 # --- Cargar los artefactos del modelo al iniciar la API ---
 try:
     pipeline = load("medical_pipeline.joblib")
     mlb = load("mlb_binarizer.joblib")
 except FileNotFoundError:
-    raise RuntimeError("Los artefactos del modelo no se encontraron. Ejecuta train.py primero.")
+    raise RuntimeError("Los artefactos del modelo no se encontraron. Ejecuta medical_classifier.py primero.")
 
 # --- Preprocesamiento (reutilizado del script de entrenamiento) ---
-stemmer = PorterStemmer()
-stop_words = set(stopwords.words('english'))
-
 def clean_text(text: str) -> str:
     text = text.lower()
     text = re.sub(r'[^a-z\s]', '', text)
@@ -48,15 +55,12 @@ def predict(article: Article):
     cleaned = clean_text(article.text)
 
     # 2. Realizar la predicción con el pipeline
-    # El pipeline se encarga de la vectorización y la clasificación.
-    # Se debe pasar el texto dentro de una lista: [cleaned]
     predicted_bin = pipeline.predict([cleaned])
 
     # 3. Convertir la predicción binaria a etiquetas de texto
     predicted_labels = mlb.inverse_transform(predicted_bin)
 
     # 4. Formatear la respuesta
-    # predicted_labels es una tupla de tuplas, ej: (('neurological',),)
     labels = predicted_labels[0] if predicted_labels and predicted_labels[0] else []
 
     return {"input_text": article.text, "predicted_categories": labels}
